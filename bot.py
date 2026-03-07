@@ -11,17 +11,17 @@ CHANNEL = "@elqanas2024"
 proxies = [
 
 {
-"ip":"89.167.56.176",
-"port":"30289",
-"username":"rtgxkhe3iu",
-"password":"dKJrZPhesQ"
+"ip":"74.81.45.135",
+"port":"1258",
+"username":"user12943686834-1772906369",
+"password":"66894b94d6"
 }
 ,
 {
     "ip":"45.32.204.208",
-    "port":"17615",
-    "username":"ghosr",
-    "password":"ghosr"
+    "port":"16118",
+    "username":"ghost",
+    "password":"ghost"
 }
 ]
 
