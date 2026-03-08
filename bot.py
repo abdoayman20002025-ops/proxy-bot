@@ -87,7 +87,7 @@ def start(message):
         return
 
 
-    if invites[user_id] < REQUIRED_INVITES:
+    if invites[user_id] < REQUIRED_INVITES and user_id != ADMIN_ID:
 
         bot.send_message(
             message.chat.id,
