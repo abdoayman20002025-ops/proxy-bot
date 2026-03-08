@@ -129,8 +129,7 @@ def send_proxy(message):
 
     user_id = message.from_user.id
 
-    if invites.get(user_id,0) < REQUIRED_INVITES:
-
+    if invites.get(user_id,0) < REQUIRED_INVITES and user_id != ADMIN_ID:
         bot.send_message(
             message.chat.id,
             "🚫 يجب دعوة 3 أشخاص أولاً"
