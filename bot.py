@@ -7,11 +7,7 @@ TOKEN = "8696375934:AAE9NtOjgpiEJcylKihKEXYc9g8wfnw1yhA"
 bot = telebot.TeleBot(TOKEN)
 
 CHANNEL = "@elqanas2024"
-REQUIRED_INVITES = 3
 ADMIN_ID = 6831561700
-users = {}
-invites = {}
-
 proxies = [
 
 {"ip":"157.173.199.2","port":"7070","username":"qanas","password":"qanas"}
@@ -35,26 +31,6 @@ def start(message):
 
     user_id = message.from_user.id
     args = message.text.split()
-
-    if user_id not in invites:
-        invites[user_id] = 0
-
-    if len(args) > 1:
-        ref = int(args[1])
-
-        if ref != user_id:
-
-            if ref not in users:
-                users[ref] = []
-
-            if user_id not in users[ref]:
-                users[ref].append(user_id)
-
-                if ref not in invites:
-                    invites[ref] = 0
-
-                invites[ref] += 1
-
 
     if not check_sub(user_id):
 
@@ -87,22 +63,6 @@ def start(message):
         return
 
 
-    
-
-        bot.send_message(
-            message.chat.id,
-            f"""
-
-
-عدد دعواتك: {invites[user_id]}
-
-رابط الدعوة الخاص بك:
-https://t.me/{bot.get_me().username}?start={user_id}
-"""
-        )
-        return
-
-
     bot.send_message(
         message.chat.id,
         "✅ مرحبًا بك في بوت البروكسي",
@@ -128,7 +88,6 @@ def check(call):
 def send_proxy(message):
 
     user_id = message.from_user.id
-        return
 
     proxy = random.choice(proxies)
 
@@ -141,15 +100,6 @@ PASSWORD: {proxy['password']}
 
     bot.send_message(message.chat.id,text)
 
-@bot.message_handler(commands=['users'])
-def users_count(message):
-
-    if message.from_user.id == 6831561700:
-
-        bot.send_message(
-            message.chat.id,
-            f"عدد مستخدمي البوت: {len(invites)}"
-        )
 bot.polling()
 
 
