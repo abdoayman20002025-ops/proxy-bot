@@ -7,26 +7,20 @@ TOKEN = "8696375934:AAE9NtOjgpiEJcylKihKEXYc9g8wfnw1yhA"
 bot = telebot.TeleBot(TOKEN)
 
 CHANNEL = "@elqanas2024"
+REQUIRED_INVITES = 3
+
+users = {}
+invites = {}
 
 proxies = [
 
-{
-"ip":"74.81.45.135",
-"port":"1258",
-"username":"user12943686834-1772906369",
-"password":"66894b94d6"
-}
-,
-{
-    "ip":"45.32.204.208",
-    "port":"16118",
-    "username":"ghost",
-    "password":"ghost"
-}
+{"ip":"89.167.56.176","port":"30289","username":"rtgxkhe3iu","password":"dKJrZPhesQ"}
+
 ]
 
 keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
 keyboard.add(KeyboardButton("GET PROXY"))
+
 
 def check_sub(user_id):
     try:
@@ -39,7 +33,30 @@ def check_sub(user_id):
 @bot.message_handler(commands=['start'])
 def start(message):
 
-    if not check_sub(message.from_user.id):
+    user_id = message.from_user.id
+    args = message.text.split()
+
+    if user_id not in invites:
+        invites[user_id] = 0
+
+    if len(args) > 1:
+        ref = int(args[1])
+
+        if ref != user_id:
+
+            if ref not in users:
+                users[ref] = []
+
+            if user_id not in users[ref]:
+                users[ref].append(user_id)
+
+                if ref not in invites:
+                    invites[ref] = 0
+
+                invites[ref] += 1
+
+
+    if not check_sub(user_id):
 
         markup = InlineKeyboardMarkup()
 
@@ -64,14 +81,31 @@ def start(message):
 
         bot.send_message(
             message.chat.id,
-            "⚠️ لازم تشترك في القناة عشان تستخدم البوت",
+            "⚠️ يجب الاشتراك في القناة أولاً",
             reply_markup=markup
         )
         return
 
+
+    if invites[user_id] < REQUIRED_INVITES:
+
+        bot.send_message(
+            message.chat.id,
+            f"""
+🚫 يجب دعوة {REQUIRED_INVITES} أصدقاء لاستخدام البوت
+
+عدد دعواتك: {invites[user_id]}
+
+رابط الدعوة الخاص بك:
+https://t.me/{bot.get_me().username}?start={user_id}
+"""
+        )
+        return
+
+
     bot.send_message(
         message.chat.id,
-        "اهلا بك في بوت البروكسي",
+        "✅ مرحبًا بك في بوت البروكسي",
         reply_markup=keyboard
     )
 
@@ -83,8 +117,7 @@ def check(call):
 
         bot.send_message(
             call.message.chat.id,
-            "✅ تم التحقق يمكنك الآن استخدام البوت",
-            reply_markup=keyboard
+            "✅ تم التحقق من الاشتراك"
         )
 
     else:
@@ -93,6 +126,16 @@ def check(call):
 
 @bot.message_handler(func=lambda m: m.text == "GET PROXY")
 def send_proxy(message):
+
+    user_id = message.from_user.id
+
+    if invites.get(user_id,0) < REQUIRED_INVITES:
+
+        bot.send_message(
+            message.chat.id,
+            "🚫 يجب دعوة 3 أشخاص أولاً"
+        )
+        return
 
     proxy = random.choice(proxies)
 
@@ -103,11 +146,7 @@ USERNAME: {proxy['username']}
 PASSWORD: {proxy['password']}
 """
 
-    bot.send_message(message.chat.id, text)
-
+    bot.send_message(message.chat.id,text)
 
 
 bot.polling()
-
-
-
