@@ -95,10 +95,35 @@ def check(call):
         bot.answer_callback_query(call.id,"❌ لم تشترك في القناة بعد")
 
 
+  SHORTLINK = "https://shrinkme.click/eY58"
+
+users_opened_link = {}
+
 @bot.message_handler(func=lambda m: m.text == "GET PROXY")
 def send_proxy(message):
 
     user_id = message.from_user.id
+
+    if user_id not in users_opened_link:
+        users_opened_link[user_id] = False
+
+    if not users_opened_link[user_id]:
+
+        bot.send_message(
+            message.chat.id,
+            f"""
+🔒 للحصول على البروكسي
+
+افتح الرابط التالي أولاً 👇
+
+{SHORTLINK}
+
+بعد فتح الرابط ارجع واضغط GET PROXY مرة أخرى
+"""
+        )
+
+        users_opened_link[user_id] = True
+        return
 
     proxy = random.choice(proxies)
 
@@ -109,8 +134,9 @@ USERNAME: {proxy['username']}
 PASSWORD: {proxy['password']}
 """
 
-    bot.send_message(message.chat.id,text)
-      
+    bot.send_message(message.chat.id, text)
+
+    users_opened_link[user_id] = False    
 bot.polling()
 
 
