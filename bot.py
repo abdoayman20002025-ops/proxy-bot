@@ -8,7 +8,7 @@ bot = telebot.TeleBot(TOKEN)
 
 CHANNEL = "@elqanas2024"
 REQUIRED_INVITES = 3
-ADMIN_ID = 20915451
+ADMIN_ID = 6831561700
 users = {}
 invites = {}
 
