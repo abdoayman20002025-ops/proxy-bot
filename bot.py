@@ -14,7 +14,7 @@ invites = {}
 
 proxies = [
 
-{"ip":"89.167.56.176","port":"30289","username":"rtgxkhe3iu","password":"dKJrZPhesQ"}
+{"ip":"157.173.199.2","port":"7070","username":"qanas","password":"qanas"}
 
 ]
 
