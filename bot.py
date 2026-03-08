@@ -148,5 +148,13 @@ PASSWORD: {proxy['password']}
 
     bot.send_message(message.chat.id,text)
 
+@bot.message_handler(commands=['users'])
+def users_count(message):
 
+    if message.from_user.id == 20915451:
+
+        bot.send_message(
+            message.chat.id,
+            f"عدد مستخدمي البوت: {len(invites)}"
+        )
 bot.polling()
