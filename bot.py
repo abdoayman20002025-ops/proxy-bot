@@ -137,10 +137,4 @@ PASSWORD: {proxy['password']}
     bot.send_message(message.chat.id, text)
 
     users_opened_link[user_id] = False    
-
-
 bot.polling()
-
-
-
-  
