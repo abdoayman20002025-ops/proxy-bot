@@ -10,6 +10,9 @@ CHANNEL = "@elqanas2024"
 
 SHORTLINK = "https://shrinkme.click/eY58"
 
+users = {}
+all_users = set()
+
 proxies = [
 
 {"ip":"162.245.238.81","port":"6868","username":"user646359706","password":"9997e742b574"},
@@ -29,6 +32,7 @@ keyboard.add(KeyboardButton("GET PROXY"))
 
 
 def check_sub(user_id):
+
     try:
         status = bot.get_chat_member(CHANNEL, user_id).status
         return status in ["member","administrator","creator"]
@@ -39,7 +43,10 @@ def check_sub(user_id):
 @bot.message_handler(commands=['start'])
 def start(message):
 
-    if not check_sub(message.from_user.id):
+    user_id = message.from_user.id
+    all_users.add(user_id)
+
+    if not check_sub(user_id):
 
         markup = InlineKeyboardMarkup()
 
@@ -90,28 +97,36 @@ def check(call):
         )
 
 
-users = {}
-
 @bot.message_handler(func=lambda m: m.text == "GET PROXY")
 def send_proxy(message):
 
     user_id = message.from_user.id
 
+    markup = InlineKeyboardMarkup()
+
+    btn1 = InlineKeyboardButton("افتح الرابط", url=SHORTLINK)
+    btn2 = InlineKeyboardButton("تحقق", callback_data="verify")
+
+    markup.add(btn1)
+    markup.add(btn2)
+
+    users[user_id] = True
+
+    bot.send_message(
+    message.chat.id,
+    "افتح الرابط ثم اضغط تحقق للحصول على البروكسي",
+    reply_markup=markup
+    )
+
+
+@bot.callback_query_handler(func=lambda call: call.data == "verify")
+def verify(call):
+
+    user_id = call.from_user.id
+
     if user_id not in users:
 
-        users[user_id] = True
-
-        bot.send_message(
-        message.chat.id,
-        f"""للحصول على البروكسي
-
-افتح الرابط التالي أولا
-
-{SHORTLINK}
-
-ثم اضغط GET PROXY مرة اخرى"""
-        )
-
+        bot.answer_callback_query(call.id,"افتح الرابط أولا")
         return
 
     proxy = random.choice(proxies)
@@ -123,9 +138,20 @@ USERNAME : {proxy['username']}
 PASSWORD : {proxy['password']}
 """
 
-    bot.send_message(message.chat.id, text)
+    bot.send_message(call.message.chat.id, text)
 
-    users[user_id] = False
+    users.pop(user_id)
+
+
+@bot.message_handler(commands=['users'])
+def users_count(message):
+
+    total = len(all_users)
+
+    bot.send_message(
+    message.chat.id,
+    f"عدد مستخدمي البوت : {total}"
+    )
+
 
 bot.polling()
-
