@@ -90,19 +90,29 @@ def check(call):
         )
 
 
+users = {}
+
 @bot.message_handler(func=lambda m: m.text == "GET PROXY")
 def send_proxy(message):
 
-    bot.send_message(
-    message.chat.id,
-    f"""للحصول على البروكسي
+    user_id = message.from_user.id
 
-افتح الرابط التالي
+    if user_id not in users:
+
+        users[user_id] = True
+
+        bot.send_message(
+        message.chat.id,
+        f"""للحصول على البروكسي
+
+افتح الرابط التالي أولا
 
 {SHORTLINK}
 
 ثم اضغط GET PROXY مرة اخرى"""
-    )
+        )
+
+        return
 
     proxy = random.choice(proxies)
 
@@ -115,6 +125,7 @@ PASSWORD : {proxy['password']}
 
     bot.send_message(message.chat.id, text)
 
+    users[user_id] = False
 
 bot.polling()
 
