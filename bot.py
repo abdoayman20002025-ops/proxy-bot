@@ -15,15 +15,7 @@ all_users = set()
 
 proxies = [
 
-{"ip":"162.245.238.81","port":"6868","username":"user646359706","password":"9997e742b574"},
-
-{"ip":"222.5.99.2","port":"3838","username":"user12287125144","password":"a567ab4a3c18"},
-
-{"ip":"5.221.133.39","port":"4479","username":"user12745686344","password":"2ca567e31e18"},
-
-{"ip":"185.127.93.60","port":"4569","username":"user12322848583","password":"68c56fb75a19"},
-
-{"ip":"193.42.244.123","port":"2538","username":"user12127968284","password":"e7b617bbcd"}
+{"ip":"45.32.212.168","port":"13336","username":"kimooo","password":"kimooo"},
 
 ]
 
