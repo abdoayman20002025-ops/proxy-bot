@@ -15,7 +15,7 @@ all_users = set()
 
 proxies = [
 
-{"ip":"45.32.212.168","port":"13336","username":"kimooo","password":"kimooo"},
+{"ip":"45.32.204.208","port":"21616","username":"WorkTrekProxy5G","password":"A"},
 
 ]
 
