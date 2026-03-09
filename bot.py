@@ -138,3 +138,7 @@ PASSWORD: {proxy['password']}
 
     users_opened_link[user_id] = False    
 bot.polling()
+
+
+
+
