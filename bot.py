@@ -15,7 +15,7 @@ all_users = set()
 
 proxies = [
 
-{"ip":"45.32.204.208","port":"18221","username":"ghost","password":"ghost"},
+{"ip":"45.63.17.144","port":"20116","username":"dragon","password":"dragon"},
 
 ]
 
