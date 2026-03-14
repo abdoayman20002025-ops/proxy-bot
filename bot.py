@@ -1,35 +1,84 @@
 import telebot
 import random
-from telebot.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
+import requests
+import socket
+from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 
 TOKEN = "8696375934:AAFWdviaemoowA_sHyke9vBV5okUNuPj3Uc"
 
 bot = telebot.TeleBot(TOKEN)
 
-CHANNEL = "@elqanas2024"
-
-SHORTLINK = "https://shrinkme.click/eY58"
-
 users = {}
 all_users = set()
-
-proxies = [
-
-{"ip":"45.63.17.144","port":"20116","username":"dragon","password":"dragon"},
-
-]
 
 keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
 keyboard.add(KeyboardButton("GET PROXY"))
 
 
-def check_sub(user_id):
+def proxy_sources():
+
+    return [
+
+    "https://api.proxyscrape.com/v2/?request=getproxies&protocol=socks5",
+    "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks5.txt",
+    "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/socks5.txt",
+    "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/socks5.txt",
+    "https://raw.githubusercontent.com/hookzof/socks5_list/master/proxy.txt",
+    "https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-socks5.txt",
+    "https://raw.githubusercontent.com/mmpx12/proxy-list/master/socks5.txt",
+    "https://raw.githubusercontent.com/roosterkid/openproxylist/main/SOCKS5_RAW.txt",
+    "https://raw.githubusercontent.com/Zaeem20/FREE_PROXIES_LIST/master/socks5.txt",
+    "https://raw.githubusercontent.com/ALIILAPRO/Proxy/main/socks5.txt"
+
+    ]
+
+
+def check_proxy(ip, port):
 
     try:
-        status = bot.get_chat_member(CHANNEL, user_id).status
-        return status in ["member","administrator","creator"]
+
+        s = socket.socket()
+        s.settimeout(3)
+        s.connect((ip, int(port)))
+        s.close()
+
+        return True
+
     except:
+
         return False
+
+
+def get_proxy():
+
+    proxy_list = []
+
+    for url in proxy_sources():
+
+        try:
+
+            r = requests.get(url, timeout=10)
+            proxy_list += r.text.splitlines()
+
+        except:
+            pass
+
+    random.shuffle(proxy_list)
+
+    for proxy in proxy_list:
+
+        try:
+
+            ip, port = proxy.split(":")
+
+            if check_proxy(ip, port):
+
+                return ip, port
+
+        except:
+            pass
+
+    return None, None
 
 
 @bot.message_handler(commands=['start'])
@@ -38,101 +87,34 @@ def start(message):
     user_id = message.from_user.id
     all_users.add(user_id)
 
-    if not check_sub(user_id):
-
-        markup = InlineKeyboardMarkup()
-
-        btn1 = InlineKeyboardButton(
-        "اشترك في القناة",
-        url="https://t.me/elqanas2024"
-        )
-
-        btn2 = InlineKeyboardButton(
-        "تحقق من الاشتراك",
-        callback_data="check"
-        )
-
-        markup.add(btn1)
-        markup.add(btn2)
-
-        bot.send_message(
-        message.chat.id,
-        "لازم تشترك في القناة عشان تستخدم البوت",
-        reply_markup=markup
-        )
-
-        return
-
     bot.send_message(
-    message.chat.id,
-    "اهلا بك في بوت البروكسي",
-    reply_markup=keyboard
-    )
-
-
-@bot.callback_query_handler(func=lambda call: call.data == "check")
-def check(call):
-
-    if check_sub(call.from_user.id):
-
-        bot.send_message(
-        call.message.chat.id,
-        "تم التحقق يمكنك استخدام البوت",
+        message.chat.id,
+        "🔥 Welcome to Free Proxy Bot",
         reply_markup=keyboard
-        )
-
-    else:
-
-        bot.answer_callback_query(
-        call.id,
-        "لم تشترك في القناة بعد"
-        )
+    )
 
 
 @bot.message_handler(func=lambda m: m.text == "GET PROXY")
 def send_proxy(message):
 
-    user_id = message.from_user.id
+    ip, port = get_proxy()
 
-    markup = InlineKeyboardMarkup()
+    if ip is None:
 
-    btn1 = InlineKeyboardButton("افتح الرابط", url=SHORTLINK)
-    btn2 = InlineKeyboardButton("تحقق", callback_data="verify")
+        bot.send_message(
+            message.chat.id,
+            "⚠️ No working proxy found try again"
+        )
 
-    markup.add(btn1)
-    markup.add(btn2)
-
-    users[user_id] = True
-
-    bot.send_message(
-    message.chat.id,
-    "افتح الرابط ثم اضغط تحقق للحصول على البروكسي",
-    reply_markup=markup
-    )
-
-
-@bot.callback_query_handler(func=lambda call: call.data == "verify")
-def verify(call):
-
-    user_id = call.from_user.id
-
-    if user_id not in users:
-
-        bot.answer_callback_query(call.id,"افتح الرابط أولا")
         return
 
-    proxy = random.choice(proxies)
-
     text = f"""
-IP : {proxy['ip']}
-PORT : {proxy['port']}
-USERNAME : {proxy['username']}
-PASSWORD : {proxy['password']}
+IP : {ip}
+PORT : {port}
+TYPE : SOCKS5
 """
 
-    bot.send_message(call.message.chat.id, text)
-
-    users.pop(user_id)
+    bot.send_message(message.chat.id, text)
 
 
 @bot.message_handler(commands=['users'])
@@ -141,8 +123,8 @@ def users_count(message):
     total = len(all_users)
 
     bot.send_message(
-    message.chat.id,
-    f"عدد مستخدمي البوت : {total}"
+        message.chat.id,
+        f"عدد مستخدمي البوت : {total}"
     )
 
 
