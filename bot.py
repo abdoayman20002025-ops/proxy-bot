@@ -8,6 +8,8 @@ TOKEN = "8696375934:AAFWdviaemoowA_sHyke9vBV5okUNuPj3Uc"
 
 bot = telebot.TeleBot(TOKEN)
 
+SHORTLINK = "https://shrinkme.click/eY58"
+
 users = {}
 all_users = set()
 
@@ -89,13 +91,32 @@ def start(message):
 
     bot.send_message(
         message.chat.id,
-        "🔥 Welcome to Free Proxy Bot",
+        "🔥 Welcome to Proxy Gift Bot",
         reply_markup=keyboard
     )
 
 
 @bot.message_handler(func=lambda m: m.text == "GET PROXY")
 def send_proxy(message):
+
+    user_id = message.from_user.id
+
+    if user_id not in users:
+
+        users[user_id] = True
+
+        bot.send_message(
+            message.chat.id,
+            f"""🔒 للحصول على البروكسي
+
+افتح الرابط التالي
+
+{SHORTLINK}
+
+ثم اضغط GET PROXY مرة اخرى"""
+        )
+
+        return
 
     ip, port = get_proxy()
 
@@ -115,6 +136,8 @@ TYPE : SOCKS5
 """
 
     bot.send_message(message.chat.id, text)
+
+    users[user_id] = False
 
 
 @bot.message_handler(commands=['users'])
