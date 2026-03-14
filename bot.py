@@ -2,11 +2,15 @@ import telebot
 import random
 import requests
 import socket
-from telebot.types import ReplyKeyboardMarkup, KeyboardButton
+from telebot.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 
 TOKEN = "8696375934:AAFWdviaemoowA_sHyke9vBV5okUNuPj3Uc"
 
 bot = telebot.TeleBot(TOKEN)
+
+CHANNEL = "@elqanas2024"
+
+YOUTUBE = "https://youtube.com/@albahth_3n_elmal"
 
 SHORTLINK = "https://shrinkme.click/eY58"
 
@@ -15,6 +19,19 @@ all_users = set()
 
 keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
 keyboard.add(KeyboardButton("GET PROXY"))
+
+
+def check_sub(user_id):
+
+    try:
+
+        status = bot.get_chat_member(CHANNEL, user_id).status
+
+        return status in ["member","administrator","creator"]
+
+    except:
+
+        return False
 
 
 def proxy_sources():
@@ -89,11 +106,61 @@ def start(message):
     user_id = message.from_user.id
     all_users.add(user_id)
 
-    bot.send_message(
+    if not check_sub(user_id):
+
+        markup = InlineKeyboardMarkup()
+
+        btn1 = InlineKeyboardButton(
+        "اشترك في قناة التليجرام",
+        url="https://t.me/elqanas2024"
+        )
+
+        btn2 = InlineKeyboardButton(
+        "اشترك في اليوتيوب",
+        url=YOUTUBE
+        )
+
+        btn3 = InlineKeyboardButton(
+        "تحقق من الاشتراك",
+        callback_data="check"
+        )
+
+        markup.add(btn1)
+        markup.add(btn2)
+        markup.add(btn3)
+
+        bot.send_message(
         message.chat.id,
-        "🔥 Welcome to Proxy Gift Bot",
-        reply_markup=keyboard
+        "يجب الاشتراك في القناة واليوتيوب لاستخدام البوت",
+        reply_markup=markup
+        )
+
+        return
+
+    bot.send_message(
+    message.chat.id,
+    "🔥 Welcome to Proxy Gift Bot",
+    reply_markup=keyboard
     )
+
+
+@bot.callback_query_handler(func=lambda call: call.data == "check")
+def check(call):
+
+    if check_sub(call.from_user.id):
+
+        bot.send_message(
+        call.message.chat.id,
+        "✅ تم التحقق يمكنك استخدام البوت",
+        reply_markup=keyboard
+        )
+
+    else:
+
+        bot.answer_callback_query(
+        call.id,
+        "⚠️ يجب الاشتراك في القناة أولاً"
+        )
 
 
 @bot.message_handler(func=lambda m: m.text == "GET PROXY")
@@ -106,8 +173,8 @@ def send_proxy(message):
         users[user_id] = True
 
         bot.send_message(
-            message.chat.id,
-            f"""🔒 للحصول على البروكسي
+        message.chat.id,
+        f"""🔒 للحصول على البروكسي
 
 افتح الرابط التالي
 
@@ -123,8 +190,8 @@ def send_proxy(message):
     if ip is None:
 
         bot.send_message(
-            message.chat.id,
-            "⚠️ No working proxy found try again"
+        message.chat.id,
+        "⚠️ لم يتم العثور على بروكسي يعمل حاول مرة اخرى"
         )
 
         return
@@ -146,8 +213,8 @@ def users_count(message):
     total = len(all_users)
 
     bot.send_message(
-        message.chat.id,
-        f"عدد مستخدمي البوت : {total}"
+    message.chat.id,
+    f"عدد مستخدمي البوت : {total}"
     )
 
 
