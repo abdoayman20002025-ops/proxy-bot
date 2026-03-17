@@ -9,9 +9,7 @@ TOKEN = "8696375934:AAFWdviaemoowA_sHyke9vBV5okUNuPj3Uc"
 bot = telebot.TeleBot(TOKEN)
 
 CHANNEL = "@elqanas2024"
-
 YOUTUBE = "https://youtube.com/@albahth_3n_elmal"
-
 SHORTLINK = "https://shrinkme.click/eY58"
 
 users = {}
@@ -22,22 +20,15 @@ keyboard.add(KeyboardButton("GET PROXY"))
 
 
 def check_sub(user_id):
-
     try:
-
         status = bot.get_chat_member(CHANNEL, user_id).status
-
         return status in ["member","administrator","creator"]
-
     except:
-
         return False
 
 
 def proxy_sources():
-
     return [
-
     "https://api.proxyscrape.com/v2/?request=getproxies&protocol=socks5",
     "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks5.txt",
     "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/socks5.txt",
@@ -48,52 +39,37 @@ def proxy_sources():
     "https://raw.githubusercontent.com/roosterkid/openproxylist/main/SOCKS5_RAW.txt",
     "https://raw.githubusercontent.com/Zaeem20/FREE_PROXIES_LIST/master/socks5.txt",
     "https://raw.githubusercontent.com/ALIILAPRO/Proxy/main/socks5.txt"
-
     ]
 
 
 def check_proxy(ip, port):
-
     try:
-
         s = socket.socket()
         s.settimeout(3)
         s.connect((ip, int(port)))
         s.close()
-
         return True
-
     except:
-
         return False
 
 
 def get_proxy():
-
     proxy_list = []
 
     for url in proxy_sources():
-
         try:
-
             r = requests.get(url, timeout=10)
             proxy_list += r.text.splitlines()
-
         except:
             pass
 
     random.shuffle(proxy_list)
 
     for proxy in proxy_list:
-
         try:
-
             ip, port = proxy.split(":")
-
             if check_proxy(ip, port):
-
                 return ip, port
-
         except:
             pass
 
@@ -111,7 +87,7 @@ def start(message):
         markup = InlineKeyboardMarkup()
 
         btn1 = InlineKeyboardButton(
-        "اشترك في قناة التليجرام",
+        "اشترك في التليجرام",
         url="https://t.me/elqanas2024"
         )
 
@@ -122,7 +98,7 @@ def start(message):
 
         btn3 = InlineKeyboardButton(
         "تحقق من الاشتراك",
-        callback_data="check"
+        callback_data="check_sub"
         )
 
         markup.add(btn1)
@@ -131,7 +107,7 @@ def start(message):
 
         bot.send_message(
         message.chat.id,
-        "يجب الاشتراك في القناة واليوتيوب لاستخدام البوت",
+        "⚠️ لازم تشترك في القناة واليوتيوب الأول",
         reply_markup=markup
         )
 
@@ -139,19 +115,19 @@ def start(message):
 
     bot.send_message(
     message.chat.id,
-    "🔥 Welcome to Proxy Gift Bot",
+    "🔥 اهلا بك في بوت البروكسي",
     reply_markup=keyboard
     )
 
 
-@bot.callback_query_handler(func=lambda call: call.data == "check")
-def check(call):
+@bot.callback_query_handler(func=lambda call: call.data == "check_sub")
+def check_subscription(call):
 
     if check_sub(call.from_user.id):
 
         bot.send_message(
         call.message.chat.id,
-        "✅ تم التحقق يمكنك استخدام البوت",
+        "✅ تم التحقق تقدر تستخدم البوت",
         reply_markup=keyboard
         )
 
@@ -159,7 +135,7 @@ def check(call):
 
         bot.answer_callback_query(
         call.id,
-        "⚠️ يجب الاشتراك في القناة أولاً"
+        "❌ لازم تشترك الأول"
         )
 
 
@@ -168,7 +144,8 @@ def send_proxy(message):
 
     user_id = message.from_user.id
 
-    if user_id not in users:
+    # لازم يدخل اللينك الأول
+    if users.get(user_id, False) == False:
 
         users[user_id] = True
 
@@ -176,11 +153,10 @@ def send_proxy(message):
         message.chat.id,
         f"""🔒 للحصول على البروكسي
 
-افتح الرابط التالي
-
+افتح الرابط ده الأول 👇
 {SHORTLINK}
 
-ثم اضغط GET PROXY مرة اخرى"""
+وبعدين اضغط GET PROXY تاني"""
         )
 
         return
@@ -191,7 +167,7 @@ def send_proxy(message):
 
         bot.send_message(
         message.chat.id,
-        "⚠️ لم يتم العثور على بروكسي يعمل حاول مرة اخرى"
+        "⚠️ مفيش بروكسي شغال دلوقتي جرب تاني"
         )
 
         return
@@ -214,7 +190,7 @@ def users_count(message):
 
     bot.send_message(
     message.chat.id,
-    f"عدد مستخدمي البوت : {total}"
+    f"👥 عدد المستخدمين: {total}"
     )
 
 
